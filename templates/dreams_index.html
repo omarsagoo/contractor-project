@@ -8,16 +8,20 @@
 </div>
 
 
+{% for dream in dreams %}
+<a href="/dreams/{{ dream._id }}" class="card-link">
+  <div class="card" style="width: 100%;">
+    <div class="card-body">
+        <h2 class="card-title">{{ dream.title }}</h2>
+        <h3 class="card-subtitle mb-2 text-muted">Tag: {{ dream.tag }}</h3>
+        <!-- <p class="card-text"> {{ dream.body }} </p> -->
+        <a href="/dreams/<dream_id>" class="card-link">Card link</a>
+        
+    </div>
+</div>
+</a>
+{% endfor %}
 
-<div class="card" style="width: 32rem;">
-        <div class="card-body">
-          <h5 class="card-title">{{ dreams.dream.title }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-      </div>
 {% endblock %}
 
 
@@ -25,7 +29,3 @@
 
 
 
-<!-- <div class='col-md-3'>
-        <h2><a href='/dreams/{{ dream._id }}'>{{ dream.title }}</a></h2>
-        <h3>{{ dream.body }}</h3>
-    </div> -->

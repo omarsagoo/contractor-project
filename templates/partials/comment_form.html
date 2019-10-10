@@ -1,0 +1,6 @@
+<form action='/dreams/comments' method='POST'>
+    <input type='hidden' value='{{ dream._id }}' name='dream_id'/>
+    <div class="form-group">
+        <label for="comment">Comment:</label>
+        <textarea class="form-control" rows="5" id="comment" value="{{ comment.body }}" style="font-size: 15px"></textarea>
+    </div>

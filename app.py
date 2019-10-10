@@ -3,19 +3,25 @@ import os
 from bson.objectid import ObjectId
 from flask import Flask, redirect, render_template, request, url_for
 from pymongo import MongoClient
+from datetime import datetime
 
-host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/Dreams')
-client = MongoClient(host=f'{host}?retryWrites=false')
-db = client.get_default_database()
+
+client = MongoClient()
+db = client.Dreams
 dreams = db.dreams
+users = db.users
 comments = db.comments
+
 
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+def index(): 
     """Return homepage."""
-    return render_template("dreams_index.html", dreams=dreams)
+    read_dreams = dreams.find()
+    # dream = dreams.find_one({'_id': ObjectId(dream_id)})
+    # print(read_dreams['_id'])
+    return render_template("dreams_index.html", dreams=read_dreams)
 
 @app.route('/dreams/new')
 def dreams_new():
@@ -29,10 +35,9 @@ def dreams_submit():
         'title': request.form.get('title'),
         'body': request.form.get('body'),
         'tag': request.form.get('tag'),
-        # 'created_at': datetime.now()
+        'created_at': datetime.now()
     }
     dream_id = dreams.insert_one(dream).inserted_id
-    print(request.form.to_dict())
 
     return redirect(url_for('dreams_show', dream_id=dream_id))
 
@@ -40,8 +45,8 @@ def dreams_submit():
 def dreams_show(dream_id):
     """Show a single playlist."""
     dream = dreams.find_one({'_id': ObjectId(dream_id)})
-    # playlist_comments = comments.find({'playlist_id': ObjectId(playlist_id)})
-    return render_template('dreams_show.html', dream=dream)
+    dream_comments = comments.find({'dream_id': ObjectId(dream_id)})
+    return render_template('dreams_show.html', dream=dream, comments=dream_comments)
 
 @app.route('/dreams/<dream_id>/edit')
 def dreams_edit(dream_id):
@@ -67,6 +72,18 @@ def dreams_delete(dream_id):
     """Delete one dream."""
     dreams.delete_one({'_id': ObjectId(dream_id)})
     return redirect(url_for('dreams_new'))
+
+@app.route('/dreams/comments', methods=['POST'])
+def dream_comment_new():
+    ''' submit a comment for a dream'''
+    comment = {
+        'user': 'Anonymous',
+        'body': request.form.get('body'),
+        'dream_id': ObjectId(request.form.get('dream_id'))
+    }
+    comment_id = comments.insert_one(comment).inserted_id
+
+    return redirect(url_for('dreams_show', dream_id=request.form.get('dream_id')))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))
