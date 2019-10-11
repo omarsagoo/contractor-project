@@ -1,18 +1,22 @@
 from unittest import TestCase, main as unittest_main, mock
 from app import app
 from bson.objectid import ObjectId
+from datetime import datetime
+
 
 sample_dream_id = ObjectId('5d55cffc4a3d4031f42827a3')
 sample_dream = {
     'title': 'My dream',
     'body': 'It was a dream',
-    'tag': 'Funny'
+    'tag': 'Funny',
+    'created_at': datetime.now()
 }
 
 sample_form_data = {
     'title': sample_dream['title'],
     'body': sample_dream['body'],
-    'tag': sample_dream['tag']
+    'tag': sample_dream['tag'],
+    'created_at': sample_dream['created_at']
 }
 
 class DreamssTests(TestCase):
@@ -44,7 +48,7 @@ class DreamssTests(TestCase):
         """Test showing a single dream."""
         mock_find.return_value = sample_dream
 
-        result = self.client.get(f'/playlists/{sample_dream_id}')
+        result = self.client.get(f'/dreams/{sample_dream_id}')
         self.assertEqual(result.status, '200 OK')
         self.assertIn(b'My dream', result.data)
 
@@ -68,7 +72,7 @@ class DreamssTests(TestCase):
 
     @mock.patch('pymongo.collection.Collection.update_one')
     def test_update_dream(self, mock_update):
-        result = self.client.post(f'/pdreams/{sample_dream_id}', data=sample_form_data)
+        result = self.client.post(f'/dreams/{sample_dream_id}', data=sample_form_data)
 
         self.assertEqual(result.status, '302 FOUND')
         mock_update.assert_called_with({'_id': sample_dream_id}, {'$set': sample_dream})
