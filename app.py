@@ -10,9 +10,9 @@ client = MongoClient(host=f'{host}?retryWrites=false',
                      username='omarsagoo', 
                      password='mmakeschool2019',
                      authSource="admin")
-db = client['Dreams']
+
 # client = MongoClient(host=f'{host}?retryWrites=false')
-# db = client.get_default_database()
+db = client.get_default_database()
 dreams = db.dreams
 users = db.users
 comments = db.comments
