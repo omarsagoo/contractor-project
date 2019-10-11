@@ -12,7 +12,7 @@ sample_dream = {
 sample_form_data = {
     'title': sample_dream['title'],
     'body': sample_dream['body'],
-    'tag': sample_dream['Funny']
+    'tag': sample_dream['tag']
 }
 
 class DreamssTests(TestCase):
@@ -55,7 +55,30 @@ class DreamssTests(TestCase):
 
         result = self.client.get(f'/dreams/{sample_dream_id}/edit')
         self.assertEqual(result.status, '200 OK')
-        self.assertIn(b'Funny', result.data)
+        self.assertIn(b'My dream', result.data)
+
+    @mock.patch('pymongo.collection.Collection.insert_one')
+    def test_submit_dream(self, mock_insert):
+        """Test submitting a new dream."""
+        result = self.client.post('/dreams', data=sample_form_data)
+
+        # After submitting, should redirect to that dreams's page
+        self.assertEqual(result.status, '302 FOUND')
+        mock_insert.assert_called_with(sample_dream)
+
+    @mock.patch('pymongo.collection.Collection.update_one')
+    def test_update_dream(self, mock_update):
+        result = self.client.post(f'/pdreams/{sample_dream_id}', data=sample_form_data)
+
+        self.assertEqual(result.status, '302 FOUND')
+        mock_update.assert_called_with({'_id': sample_dream_id}, {'$set': sample_dream})
+
+    @mock.patch('pymongo.collection.Collection.delete_one')
+    def test_delete_dream(self, mock_delete):
+        form_data = {'_method': 'DELETE'}
+        result = self.client.post(f'/dreams/{sample_dream_id}/delete', data=form_data)
+        self.assertEqual(result.status, '302 FOUND')
+        mock_delete.assert_called_with({'_id': sample_dream_id})
 
 if __name__ == '__main__':
     unittest_main()
