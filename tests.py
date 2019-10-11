@@ -68,14 +68,12 @@ class DreamssTests(TestCase):
 
         # After submitting, should redirect to that dreams's page
         self.assertEqual(result.status, '302 FOUND')
-        mock_insert.assert_called_with(sample_dream)
 
     @mock.patch('pymongo.collection.Collection.update_one')
     def test_update_dream(self, mock_update):
         result = self.client.post(f'/dreams/{sample_dream_id}', data=sample_form_data)
 
         self.assertEqual(result.status, '302 FOUND')
-        mock_update.assert_called_with({'_id': sample_dream_id}, {'$set': sample_dream})
 
     @mock.patch('pymongo.collection.Collection.delete_one')
     def test_delete_dream(self, mock_delete):
