@@ -7,7 +7,7 @@ from datetime import datetime
 
 host = os.environ.get('MONGODB_URI', 'mongodb://omarsagoo:makeschool2019@ds233268.mlab.com:33268/heroku_vjnrq1bv')
 client = MongoClient(host=f'{host}?retryWrites=false')
-db = client.Dreams
+db = client.get_default_database()
 dreams = db.dreams
 users = db.users
 comments = db.comments
