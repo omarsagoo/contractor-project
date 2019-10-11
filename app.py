@@ -5,7 +5,7 @@ from flask import Flask, redirect, render_template, request, url_for
 from pymongo import MongoClient
 from datetime import datetime
 
-host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/Dream')
+host = os.environ.get('MONGODB_URI', 'mongodb://admin:admin123@ds233268.mlab.com:33268/heroku_vjnrq1bv')
 client = MongoClient(host=f'{host}?retryWrites=false')
 db = client.Dreams
 dreams = db.dreams
