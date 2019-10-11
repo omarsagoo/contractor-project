@@ -5,8 +5,8 @@ from flask import Flask, redirect, render_template, request, url_for
 from pymongo import MongoClient
 from datetime import datetime
 
-
-client = MongoClient()
+host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/Dream')
+client = MongoClient(host=f'{host}?retryWrites=false')
 db = client.Dreams
 dreams = db.dreams
 users = db.users
@@ -71,19 +71,26 @@ def dreams_update(dream_id):
 def dreams_delete(dream_id):
     """Delete one dream."""
     dreams.delete_one({'_id': ObjectId(dream_id)})
-    return redirect(url_for('dreams_new'))
+    return redirect(url_for('index'))
 
 @app.route('/dreams/comments', methods=['POST'])
 def dream_comment_new():
     ''' submit a comment for a dream'''
     comment = {
-        'user': 'Anonymous',
-        'body': request.form.get('body'),
+        'user': request.form.get('user'),
+        'content': request.form.get('content'),
         'dream_id': ObjectId(request.form.get('dream_id'))
     }
     comment_id = comments.insert_one(comment).inserted_id
 
     return redirect(url_for('dreams_show', dream_id=request.form.get('dream_id')))
+
+@app.route('/dreams/comments/<comment_id>')
+def dream_delete_comment(comment_id):
+    comment = comments.find_one({'_id': ObjectId(comment_id)})
+    comments.delete_one({'_id': ObjectId(comment_id)})
+    return redirect(url_for('dreams_show', dream_id=comment.get('dream_id')))
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))

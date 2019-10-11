@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<a href='/'>Back to Home</a>
-<div class="jumbotron">
+<a href='/' style="color:#dfa25d ">Back to Home</a>
+<div class="container">
 <div class='row'>
-    <div class='col-sm-6 col-sm-offset-3'>
+    <div class='container' >
         <h1>{{ dream.title }}</h1>
         {% if dream.created_at %}
-        <p class='text-muted'>Created on {{ dream.created_at.strftime('%A, %d %B, %Y') }}
-                at {{ dream.created_at.strftime('%I:%M %p') }}</p>
+        <p class='text-muted'>Created on {{ dream.created_at.strftime('%A, %B %d, %Y') }}
+                <!-- at {{ dream.created_at.strftime('%I:%M %p') }} --></p>
         {% endif %}
         <h3>Your tag: {{ dream.tag }}</h3>
         <h2>{{ dream.body }}</h2>
@@ -20,16 +20,31 @@
             <button class='btn btn-primary' type='submit'>Delete</button>
           </form>
         </p>
-        {% include 'partials/comment_form.html' %}
-        {% for comment in comments %}
-        <div class='card'>
-            <div class='card-block'>
-                <h4 class='card-title'>{{ comment.title }}</h4>
-                <p class='card-text'>{{ comment.content }}</p>
-            </div>
-        </div>
-        {% endfor %}
-      </div>
+        
+    </div>
+</div>
+
+<hr>  
+
+<div class="row">
+  <div class="container" >
+    {% include 'partials/comment_form.html' %}
+    <hr>
+  </div> 
+</div>
+
+</div>
+<hr>
+
+
+<div class="row">
+  <div class="container" style="padding:0%">
+    <div class='card' style="background-color: rgba(0, 0, 0, 0); border-style:none; " >
+    {% for comment in comments %}
+      {% include 'partials/comment.html' %}
+    {% endfor %}
     </div>
   </div>
-    {% endblock %}
+</div>
+ 
+  {% endblock %}

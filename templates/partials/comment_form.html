@@ -1,6 +1,33 @@
-<form action='/dreams/comments' method='POST'>
-    <input type='hidden' value='{{ dream._id }}' name='dream_id'/>
-    <div class="form-group">
-        <label for="comment">Comment:</label>
-        <textarea class="form-control" rows="5" id="comment" value="{{ comment.body }}" style="font-size: 15px"></textarea>
+<div class="form-group">
+        
+<form action='/dreams/comments' method='post'>
+    <fieldset>
+            <input type='hidden' value='{{ dream._id }}' name='dream_id'/>
+            <fieldset>
+        <legend>Add a Comment</legend>
+        <!-- USER -->
+        <div class='form-group'>
+            <label for='comment-title'>User</label><br>
+            <input class='form-control'
+                id='comment-title'
+                type='text'
+                name='user'
+                placeholder='User'/>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class='form-group'>
+            <label for='comment-content'>Description</label><br>
+            <textarea class='form-control'
+                id='comment-content'
+                name='content'
+                rows='3'
+                placeholder='Your comment...'></textarea>
+        </div>
+    </fieldset>
+
+    <!-- BUTTON -->
+    <div class='form-group'>
+        <button class='btn btn-primary' type='submit'>Save Comment</button>
     </div>
+</form>
